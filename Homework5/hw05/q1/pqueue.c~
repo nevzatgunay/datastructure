@@ -1,0 +1,177 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+#include <time.h>
+
+struct Patient {
+	int national_id;
+	int condition; // 1-9, 1 being the most urgent
+};
+
+struct PQueue *pqueue_new(int max_n);
+void pqueue_free(struct PQueue *pq);
+
+void pqueue_insert(struct PQueue *pq, float item);
+float pqueue_delmax(struct PQueue *pq);
+int pqueue_is_empty(const struct PQueue *pq);
+void pqueue_print(const struct PQueue *pq);
+
+int main(int argc, char **argv)
+{
+	FILE *fin = open_phone_book_file("patients.txt");
+	struct Patient *pq = pqueue_new(10);
+
+	int i=0;
+        while (true){
+		//int national_id,condition;
+		fscanf(fin, "%d %d", pq->national_id, pq->condition);
+		printf("Inserting national id:[%d] and condition:[%d]\n",pq->national_id,pq->condition);
+               	//pqueue_insert(pt[i].national_id,pt[i].condition);
+		i++;
+		if(i%3==0){
+        		pqueue_print(pq);
+			printf("Popped lowest condition id:[%d]",pqueue_delmax(pq));
+			pqueue_print(pq);
+		}
+	}
+
+	return EXIT_SUCCESS;
+-----------------
+
+        srand(time(0));
+
+        struct PQueue *pq = pqueue_new(10);
+        pqueue_print(pq);
+
+        for (int i = 0; i < 5; ++i) {
+                float x = (rand() % 100) / 10.0f;
+                printf("Inserting %5.2f\n", x);
+                pqueue_insert(pq, x);
+        }
+        getchar();
+        pqueue_print(pq);
+
+        for (int i = 0; i < 3; ++i) {
+                float x = (rand() % 100) / 10.0f;
+                printf("Inserting %5.2f\n", x);
+                pqueue_insert(pq, x);
+        }
+        getchar();
+        pqueue_print(pq);
+
+        printf("Popped max %5.2f\n", pqueue_delmax(pq));
+        getchar();
+
+        pqueue_print(pq);
+        printf("Popped max %5.2f\n", pqueue_delmax(pq));
+        getchar();
+        pqueue_print(pq);
+
+        for (int i = 0; i < 2; ++i) {
+                float x = (rand() % 100) / 10.0f;
+                printf("Inserting %5.2f\n", x);
+                pqueue_insert(pq, x);
+        }
+        getchar();
+        pqueue_print(pq);
+
+        pqueue_free(pq);
+
+        return EXIT_SUCCESS;
+}
+
+int less(float f0, float f1)
+{
+        return f0 < f1;
+}
+
+void exchange(float *x, int i, int j)
+{
+        float t = x[i];
+        x[i] = x[j];
+        x[j] = t;
+}
+
+void downheap(float *x, int k, int n)
+{
+        int j;
+        while (2*k <= n) {
+                j = 2*k;
+                if (j < n && less(x[j], x[j+1]))
+                        j++;
+                if (!less(x[k], x[j]))
+                        break;
+                exchange(x, j, k);
+                k = j;
+        }
+}
+
+void upheap(float *x, int k)
+{
+        while (k > 1 && less(x[k/2], x[k])) {
+                exchange(x, k, k/2);
+                k = k/2;
+        }
+}
+
+struct PQueue *pqueue_new(int max_n)
+{
+        struct Patient *pq = malloc(sizeof(*pq));
+
+        pq->national_id = 0;
+        pq->condition = 0;
+
+        return pq;
+}
+
+void pqueue_free(struct PQueue *pq)
+{
+        if (pq) {
+                free(pq->elements);
+                free(pq);
+        }
+}
+
+void pqueue_insert(struct PQueue *pq, float item)
+{
+        pq->elements[++pq->n] = item;
+        upheap(pq->elements, pq->n);
+}
+
+float pqueue_delmax(struct PQueue *pq)
+{
+        exchange(pq->elements, 1, pq->n);
+        downheap(pq->elements, 1, pq->n-1);
+        return pq->elements[pq->n--];
+}
+
+int pqueue_is_empty(const struct PQueue *pq)
+{
+        return pq->n == 0;
+}
+
+void pqueue_print(const struct PQueue *pq)
+{
+        printf("  0");
+        for (int i = 1; i < MAX; ++i)
+                printf(" %5d", i);
+        printf(" ]\n");
+
+        printf("[ -");
+        for (int i = 1; i <= MAX; ++i)
+                printf(" %5.2f", pq->elements[i]);
+        for (int i = pq->n+1; i < pq->max_n+1; ++i)
+                printf(" %5c", '-');
+        printf(" ]\n");
+}
+
+FILE *open_phone_book_file(const char *filename)
+{
+        FILE *fin = fopen(filename, "r+");
+        if (fin == NULL) {
+                fprintf(stderr, "Error opening phonebook file %s!\n", filename);
+                exit(EXIT_FAILURE);
+        }
+        return fin;
+}

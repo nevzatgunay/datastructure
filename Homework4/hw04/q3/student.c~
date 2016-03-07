@@ -1,0 +1,23 @@
+#include "student.h"
+
+#include <stdlib.h>
+
+void print_student_list(struct Array *student_list)
+{
+        int n = array_size(student_list);
+        for (int i = 0; i < n; ++i) {
+                struct Student *std = (struct Student *)array_get(student_list, i);
+                printf("[%d] %-20s -> %d\n",
+                       i+1, std->name, std->tel);
+        }
+}
+
+FILE *open_phone_book_file(const char *filename)
+{
+        FILE *fin = fopen(filename, "r+");
+        if (fin == NULL) {
+                fprintf(stderr, "Error opening phonebook file %s!\n", filename);
+                exit(EXIT_FAILURE);
+        }
+        return fin;
+}

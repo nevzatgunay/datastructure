@@ -1,0 +1,71 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<math.h>
+#define MAX_ELEMENTS 10
+
+struct Student{
+	char *name;
+	int id;
+};
+
+struct Student *load_students(struct Student *std);
+void print_student(struct Student std);
+int cmp_int(const void *v0, const void *v1);
+FILE *open_phone_book_file(const char *filename);
+
+int main(){
+	struct Student *std;	
+	std=load_students(std);
+	//qsort(&std.name, MAX_ELEMENTS, sizeof(int), &cmp_int);
+	print_student(std);
+	
+	return 0;
+}
+
+struct Student *load_students(struct Student *std){
+	int n=0;
+	//struct Student std[10];	
+	FILE *fin = open_phone_book_file("students.txt");
+	std=malloc(MAX_ELEMENTS*sizeof(int));
+	printf("Unsorted list:\n");
+        while (fscanf(fin, "%20s %d", std->name, &std->id) != EOF){			
+		printf("[%d]%s %d\n",n+1,std->name,std->id);
+		n++;		
+	}
+	fclose(fin);
+	return std;
+	
+}
+
+void print_student(struct Student std){
+	int n=0;
+	//struct Student temp=*std;
+	printf("Sorted list:\n");      
+	while(n<MAX_ELEMENTS){
+		//printf("%d",temp.id);
+                printf("[%d]%s --> %d\n",n+1,std.name,std.id);
+		n++;
+        }
+	
+        //printf("Bla\n");
+}
+
+FILE *open_phone_book_file(const char *filename)
+{
+        FILE *fin = fopen(filename, "r+");
+        if (fin == NULL) {
+                fprintf(stderr, "Error opening phonebook file %s!\n", filename);
+                //exit(EXIT_FAILURE);
+        }
+        return fin;
+}
+
+int cmp_int(const void *v0, const void *v1)
+{
+        const int *i0 = (const int *)v0;
+        const int *i1 = (const int *)v1;
+        return *i0 - *i1;
+}
+
+

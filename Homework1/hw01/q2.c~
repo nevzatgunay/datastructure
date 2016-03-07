@@ -1,0 +1,28 @@
+/*	Nevzat Günay
+	200201062
+*/
+#include<stdio.h>
+#include<ctype.h>
+main()
+{
+  	char c;//c holds the character from the file(text.txt).
+	int state;//it holds the situation,that is,we control the space,'.' and '?' characters.
+	state = 1;
+	do
+	{
+		c =getchar();//we get a character from the file.
+		if(state==1)//firstly,this block runs and first character become upper case.
+		{
+      	  		c = toupper(c);
+	  		state=0;
+      		}
+		if(c=='.' || c=='?' || c=='!')//we control the special characters(.,?,!).
+	    		state=2;
+	 	else
+	  	{	
+	    		state--;//it is not,state decreases -1.
+	  	}
+	 	printf("%c",c);
+	
+	}while(c!=EOF);//loop runs until the end of the file.
+}

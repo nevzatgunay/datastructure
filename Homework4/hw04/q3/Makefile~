@@ -1,0 +1,11 @@
+CC:=gcc
+CFLAGS:=-Wall -g -std=c99
+
+targets = registery
+all: $(targets)
+
+phone-book-reader: registery.o student.o student.h array.o array.h Makefile
+	$(CC) $(CFLAGS) $(filter %.o,$^) -o $@
+
+clean:
+	@rm *.o *~ $(targets) -f

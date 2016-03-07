@@ -1,0 +1,84 @@
+/*	200201062 - Nevzat GÜNAY
+	Homework 2/1
+*/
+#include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
+#include <float.h>
+#include "grade_util.h"
+float *load_grades(int *number_of_students)
+{
+	float *grades;
+	int max = 2;//it actually holds capacity of grades.
+        grades = malloc((*number_of_students)*sizeof(grades));
+        while (grades[*number_of_students] != EOF && scanf("%f\n", &grades[*number_of_students]) == 1)//we read the data from the file.
+	{
+                if(*number_of_students == max)//if number of students equal to 2 or 2's factor,we reallocate the new memory.
+		{
+                	max *= 2;//we increase the max as multipliying.
+                	grades = realloc(grades, max*sizeof(grades));//we reallocate float pointer grades.
+               	}
+                *number_of_students = (*number_of_students) + 1; //index is increased.
+        }
+        return grades;//return float pointer grades.
+}
+
+float minimum_of(int *n, float *x)//it was changed with respect to the functions calling of grader.c
+{
+        float min = FLT_MAX;
+        for (int i = 0; i < (*n); ++i)
+                if (x[i] < min)
+                        min = x[i];
+        return min;
+}
+
+float maximum_of(int *n, float *x)//it was changed with respect to the functions calling of grader.c
+{
+        float max = -FLT_MAX;
+        for (int i = 0; i < (*n); ++i)
+                if (x[i] > max)
+                        max = x[i];
+        return max;
+}
+
+float average_of(int *n, float *x)//it was changed with respect to the functions calling of grader.c
+{
+        float average = 0.0f;
+        for (int i = 0; i < (*n); ++i)
+                average += x[i];
+        average /= (*n);
+
+        return average;
+}
+
+float normalize(float *grade, float average)//it was changed with respect to the functions calling of grader.c
+{
+        float normalized = *grade;
+        if (average < 70.0f)
+                normalized += 70.0f - average;
+        if (normalized > 100.0f)
+                normalized = 100.0f;
+        return normalized;
+}
+
+char *letter_grade_for(float *grade, float average)//it was changed with respect to the functions calling of grader.c
+{
+        float normalized = normalize(grade, average);
+        int letter_bin = round(normalized) / 5;
+        char *letter_grade;
+        switch (letter_bin) {
+        case 20:
+        case 19:
+        case 18: letter_grade = "AA"; break;
+        case 17: letter_grade = "BA"; break;
+        case 16: letter_grade = "BB"; break;
+        case 15: letter_grade = "CB"; break;
+        case 14: letter_grade = "CC"; break;
+        case 13: letter_grade = "DC"; break;
+        case 12: letter_grade = "DD"; break;
+        case 11: letter_grade = "FD"; break;
+        default: letter_grade = "FF"; break;
+        }
+
+        return letter_grade;
+}

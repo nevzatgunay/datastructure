@@ -1,0 +1,105 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include <string.h>
+#include <math.h>
+#define MAX_ELEMENTS 10
+
+struct Student{
+	char *name;
+	int id;
+};
+
+//struct Student *initialize();
+void load_students(struct Student std);
+void print_student(struct Student std);
+int cmp_int(const void *v0, const void *v1);
+FILE *open_phone_book_file(const char *filename);
+
+int main(){
+	struct Student std;	
+	load_students(std);
+	//qsort((struct Student *)&std->name, MAX_ELEMENTS, sizeof(int), &cmp_int);
+	print_student(std);
+	
+	return 0;
+}
+/*
+struct Student *initialize(){
+	struct Student *std=malloc(sizeof(struct Student));
+	std->name=calloc(20,sizeof(char));
+	std->id=0;
+	return std;
+}*/
+
+void load_students(struct Student std){
+	int n=0;	
+	FILE *fin = open_phone_book_file("students.txt");
+	std.name=malloc(20*sizeof(char));
+        while (fscanf(fin, "%20s %ld", std.name, &std.id) == 2)	
+		n++;printf("%s",std.name);		
+	fclose(fin);
+	/*
+	FILE *fin = open_phone_book_file("students.txt");
+	std->name = malloc(sizeof(char)*10);
+	while(n<MAX_ELEMENTS){
+		fscanf(fin,"%s %d\n",*(std[n].name),*(std->id));		
+	n++;*/
+	
+}
+
+void print_student(struct Student std){
+        for (int i = 0; i < MAX_ELEMENTS; ++i) {
+                printf("%s --> %d\n",std.name,std.id);
+        }
+        //printf("Bla\n");
+}
+
+FILE *open_phone_book_file(const char *filename)
+{
+        FILE *fin = fopen(filename, "r+");
+        if (fin == NULL) {
+                fprintf(stderr, "Error opening phonebook file %s!\n", filename);
+                //exit(EXIT_FAILURE);
+        }
+        return fin;
+}
+
+int cmp_int(const void *v0, const void *v1)
+{
+        const int *i0 = (const int *)v0;
+        const int *i1 = (const int *)v1;
+        return *i0 - *i1;
+}
+/*	struct Student std;//=malloc(sizeof(struct Student));
+	std.name =malloc(sizeof(int)*size);
+        int n = 0,max=2;
+        while (std.name[n] !=EOF && scanf("%s %d\n", &std.name[n],&std.id)==1){
+		               	
+		//printf("Bla\n");
+		//fscanf(fin, "%s %d", std->name,&std->id);
+		//if(std->name==NULL)
+		//	printf("Failure\n");
+		if(n==max){
+			max*=2;
+			std.name = realloc(std.name,max*sizeof(std.name));
+		}
+		n++;
+	}
+        return std;
+
+	float *grades;
+	int max = 2;//it actually holds capacity of grades.
+        grades = malloc((*number_of_students)*sizeof(grades));
+        while (grades[*number_of_students] != EOF && scanf("%f\n", &grades[*number_of_students]) == 1)//we read the data from the file.
+	{
+                if(*number_of_students == max)//if number of students equal to 2 or 2's factor,we reallocate the new memory.
+		{
+                	max *= 2;//we increase the max as multipliying.
+                	grades = realloc(grades, max*sizeof(grades));//we reallocate float pointer grades.
+               	}
+                *number_of_students = (*number_of_students) + 1; //index is increased.
+        }
+        return grades;*/
+
+
+
